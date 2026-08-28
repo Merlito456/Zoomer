@@ -339,4 +339,39 @@ async def websocket_endpoint(websocket: WebSocket, meeting_id: str):
             "data": {
                 "room": room,
                 "participants": participants,
-                "messages":
+                "messages": db.get_chat_messages(room["id"])
+            }
+        })
+        
+        while True:
+            data = await websocket.receive_text()
+            message_data = json.loads(data)
+            msg_type = message_data.get("type")
+            
+            if msg_type == "chat":
+                # Save and broadcast chat message
+                msg = db.save_chat_message(
+                    room_id=room["id"],
+                    participant_id=participant_id,
+                    participant_name=participant["name"],
+                    message=message_data.get("message", "")
+                )
+                await manager.broadcast(room["id"], {
+                    "type": "chat",
+                    "data": msg
+                })
+            
+            elif msg_type == "status_update":
+                # Update participant status
+                status = message_data.get("status")
+                db.update_participant(participant_id, status=status)
+                await manager.broadcast(room["id"], {
+                    "type": "status_update",
+                    "data": {
+                        "participant_id": participant_id,
+                        "status": status
+                    }
+                })
+    
+    except WebSocketDisconnect:
+        manager.disconnect(room["id"], websocket)
