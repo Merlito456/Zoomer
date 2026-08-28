@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoom Clone Pro</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <span class="material-icons">video_call</span>
+                </div>
+                <div class="logo-text">
+                    <span class="brand">ZoomClone</span>
+                    <span class="badge">Pro</span>
+                </div>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <button class="nav-btn" id="navNewMeeting">
+                    <span class="material-icons">add</span>
+                    <span>New Meeting</span>
+                </button>
+                <button class="nav-btn secondary" id="navJoinMeeting">
+                    <span class="material-icons">login</span>
+                    <span>Join</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Dashboard View -->
+        <div id="dashboardView" class="view active">
+            <div class="dashboard-header">
+                <div>
+                    <h1 class="page-title">Your Meetings</h1>
+                    <p class="page-subtitle">Create or join a meeting to get started</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-primary" id="createMeetingBtn">
+                        <span class="material-icons">add</span>
+                        New Meeting
+                    </button>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #e3f2fd; color: #1976d2;">
+                        <span class="material-icons">meeting_room</span>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Total Meetings</span>
+                        <span class="stat-value" id="totalMeetings">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #e8f5e9; color: #388e3c;">
+                        <span class="material-icons">people</span>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Active Participants</span>
+                        <span class="stat-value" id="activeParticipants">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #fff3e0; color: #f57c00;">
+                        <span class="material-icons">fiber_manual_record</span>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Recordings</span>
+                        <span class="stat-value" id="totalRecordings">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="roomsList" class="rooms-grid">
+                <!-- Rooms will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Meeting View -->
+        <div id="meetingView" class="view" style="display:none;">
+            <div id="meetingContainer" class="meeting-container">
+                <!-- Video Grid -->
+                <div id="videoContainer" class="video-container">
+                    <!-- LiveKit will render here -->
+                </div>
+
+                <!-- Meeting Controls -->
+                <div class="meeting-controls">
+                    <button class="control-btn" id="toggleAudio" title="Mute/Unmute">
+                        <span class="material-icons">mic</span>
+                        <span class="control-label">Mute</span>
+                    </button>
+                    <button class="control-btn" id="toggleVideo" title="Video On/Off">
+                        <span class="material-icons">videocam</span>
+                        <span class="control-label">Video</span>
+                    </button>
+                    <button class="control-btn" id="toggleScreenShare" title="Share Screen">
+                        <span class="material-icons">screen_share</span>
+                        <span class="control-label">Share</span>
+                    </button>
+                    <button class="control-btn" id="toggleChat" title="Chat">
+                        <span class="material-icons">chat</span>
+                        <span class="control-label">Chat</span>
+                    </button>
+                    <button class="control-btn" id="toggleParticipants" title="Participants">
+                        <span class="material-icons">people</span>
+                        <span class="control-label">People</span>
+                    </button>
+                    <button class="control-btn" id="recordBtn" title="Record">
+                        <span class="material-icons">fiber_manual_record</span>
+                        <span class="control-label">Record</span>
+                    </button>
+                    <button class="control-btn" id="handRaiseBtn" title="Raise Hand">
+                        <span class="material-icons">back_hand</span>
+                        <span class="control-label">Raise</span>
+                    </button>
+                    <button class="control-btn btn-danger" id="leaveMeetingBtn" title="Leave">
+                        <span class="material-icons">call_end</span>
+                        <span class="control-label">Leave</span>
+                    </button>
+                </div>
+
+                <!-- Meeting Info Bar -->
+                <div class="meeting-info-bar">
+                    <span id="meetingTitle">Meeting</span>
+                    <span id="participantCount">0 participants</span>
+                    <span id="recordingStatus" class="recording-dot"></span>
+                </div>
+
+                <!-- Chat Panel -->
+                <div id="chatPanel" class="chat-panel" style="display:none;">
+                    <div class="chat-header">
+                        <h4>Chat</h4>
+                        <button class="close-btn" id="closeChatBtn">&times;</button>
+                    </div>
+                    <div id="chatMessages" class="chat-messages"></div>
+                    <div class="chat-input">
+                        <input type="text" id="chatInput" placeholder="Type a message..." />
+                        <button id="sendChatBtn" class="btn-primary">
+                            <span class="material-icons">send</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Participants Panel -->
+                <div id="participantsPanel" class="participants-panel" style="display:none;">
+                    <div class="panel-header">
+                        <h4>Participants</h4>
+                        <button class="close-btn" id="closeParticipantsBtn">&times;</button>
+                    </div>
+                    <div id="participantsList" class="participants-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Join Meeting -->
+    <div id="joinModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Join Meeting</h2>
+                <button class="close-btn" id="closeJoinModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Meeting ID</label>
+                    <input type="text" id="joinMeetingId" placeholder="Enter meeting ID (e.g., A1B2C3D4)" />
+                </div>
+                <button class="btn-primary full-width" id="joinMeetingSubmit">Join Meeting</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Create Meeting -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create Meeting</h2>
+                <button class="close-btn" id="closeCreateModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Meeting Name</label>
+                    <input type="text" id="roomName" placeholder="e.g., Team Standup" />
+                </div>
+                <div class="form-group">
+                    <label>Your Full Name</label>
+                    <input type="text" id="hostName" placeholder="e.g., John Doe" />
+                </div>
+                <div class="form-group">
+                    <label>Company</label>
+                    <input type="text" id="hostCompany" placeholder="Your company name" />
+                </div>
+                <div class="form-group">
+                    <label>Position</label>
+                    <input type="text" id="hostPosition" placeholder="Your position" />
+                </div>
+                <button class="btn-primary full-width" id="createRoomSubmit">Create Meeting</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Participant Info -->
+    <div id="participantModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Join Meeting</h2>
+            </div>
+            <div class="modal-body">
+                <p class="modal-subtitle">Enter your details to join the meeting</p>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="participantName" placeholder="Your full name" />
+                </div>
+                <div class="form-group">
+                    <label>Company</label>
+                    <input type="text" id="participantCompany" placeholder="Your company" />
+                </div>
+                <div class="form-group">
+                    <label>Position</label>
+                    <input type="text" id="participantPosition" placeholder="Your position" />
+                </div>
+                <button class="btn-primary full-width" id="participantSubmit">Join Meeting</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
